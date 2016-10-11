@@ -1,6 +1,7 @@
 package com.share.multikeys.service;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -29,23 +30,47 @@ public class OrderService {
     
     public void selectByKey(Integer orderId) {
     	Long s=System.currentTimeMillis();
-        System.out.println("cost "+(System.currentTimeMillis()-s)/1000+"S: "+orderRepository.selectByKey(orderId));
+    	List<Order> list=orderRepository.selectByKey(orderId);
+    	if(list!=null&&list.size()>0){
+	    	for(int i=0;i<list.size();i++){
+	    		System.out.println(list.get(i));
+	    	}
+    	}
+        System.out.println("cost "+(System.currentTimeMillis()-s)+"ms");
     }
     
     public void selectByKeyOrTime(Integer orderId,Date date) {
     	Long s=System.currentTimeMillis();
-        System.out.println("cost "+(System.currentTimeMillis()-s)/1000+"S: "+orderRepository.selectByKeyOrTime(orderId,date));
+    	List<Order> list=orderRepository.selectByKeyOrTime(orderId,date);
+    	if(list!=null&&list.size()>0){
+	    	for(int i=0;i<list.size();i++){
+	    		System.out.println(list.get(i));
+	    	}
+    	}
+        System.out.println("cost "+(System.currentTimeMillis()-s)+"ms");
     }
     
     
     public void selectBetweenTime(Date sDate,Date eDate) {
     	Long s=System.currentTimeMillis();
-        System.out.println("cost "+(System.currentTimeMillis()-s)/1000+"S: "+orderRepository.selectBetweenTime(sDate,eDate));
+    	List<Order> list=orderRepository.selectBetweenTime(sDate,eDate);
+    	if(list!=null&&list.size()>0){
+	    	for(int i=0;i<list.size();i++){
+	    		System.out.println(list.get(i));
+	    	}
+    	}
+        System.out.println("cost "+(System.currentTimeMillis()-s)+"ms");
     }
     
     public void selectRangeTime(Date sDate,Date eDate) {
     	Long s=System.currentTimeMillis();
-        System.out.println("cost "+(System.currentTimeMillis()-s)/1000+"S: "+orderRepository.selectRangeTime(sDate,eDate));
+    	List<Order> list=orderRepository.selectRangeTime(sDate,eDate);
+    	if(list!=null&&list.size()>0){
+	    	for(int i=0;i<list.size();i++){
+	    		System.out.println(list.get(i));
+	    	}
+    	}
+        System.out.println("cost "+(System.currentTimeMillis()-s)+"ms");
     }
     
     public void selectInRange(){

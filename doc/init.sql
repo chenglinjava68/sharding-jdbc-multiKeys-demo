@@ -143,9 +143,33 @@ CREATE TABLE `t_order_1_2016_q3` (
 -- ----------------------------
 -- Records of t_order_1_2016_q3
 -- ----------------------------
+
+CREATE TABLE `t_user_order_0` (
+  `user_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `remark` varchar(50) NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT '1990-01-01 00:00:00' COMMENT '创建时间',
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_user_order_1` (
+  `user_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `remark` varchar(50) NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT '1990-01-01 00:00:00' COMMENT '创建时间',
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `t_order_item` (
   `item_id` int(11) NOT NULL,
   `order_id` int(11) NOT NULL,
   `item_name` varchar(50) NOT NULL,
   PRIMARY KEY (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_package` (
+  `package_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `package_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`package_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

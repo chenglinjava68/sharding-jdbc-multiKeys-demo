@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.share.multikeys.repository.CommonRepository">
+
+    <resultMap id="itemOrderResultMap" type="com.share.multikeys.entity.ItemOrderJoin">
+        <result column="order_id" property="orderId" jdbcType="INTEGER"/>
+        <result column="item_id" property="itemId" jdbcType="INTEGER"/>
+        <result column="item_name" property="itemName" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+    <resultMap id="userOrderJoin" type="com.share.multikeys.entity.UserOrderJoin">
+        <result column="order_id" property="orderId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="create_time" property="userOrderDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+    <sql id="userOrderJoinColumnList">
+        t_user_order.order_id,
+        t_user_order.user_id,
+        t_user_order.remark,
+        t_order.status,
+        t_user_order.create_time
+    </sql>
+    
+    <!-- where子句中指定路由表键值 -->
+    <select id="selectItemOrderJoin" resultMap="itemOrderResultMap" parameterType="hashmap">
+       SELECT
+	   t_order_item.item_id, t_order_item.order_id, t_order_item.item_name,t_order.create_time
+	   FROM `t_order` left join `t_order_item` on t_order.order_id=t_order_item.order_id  where t_order.order_id= #{orderId,jdbcType=INTEGER} 
+    </select>
+    
+    <select id="selectUserOrderJoinWithTime" resultMap="userOrderJoin" parameterType="hashmap">
+        SELECT
+        <include refid="userOrderJoinColumnList"/>
+        FROM `t_order` left join `t_user_order` on t_order.order_id=t_user_order.order_id where
+        t_order.create_time between #{sTime,jdbcType=TIMESTAMP} and #{eTime,jdbcType=TIMESTAMP}
+    </select>
+    
+    <!-- t_order.order_id=9 -->
+    <!--  
+    <select id="selectUserOrderJoinWithTime" resultMap="userOrderJoin" parameterType="hashmap">
+        SELECT
+        <include refid="userOrderJoinColumnList"/>
+        FROM `t_order` left join `t_user_order` on t_user_order.order_id=t_order.order_id where
+        t_order.create_time between #{sTime,jdbcType=TIMESTAMP} and #{eTime,jdbcType=TIMESTAMP} order by t_user_order.user_id desc  
+    </select>
+    -->
+    
+</mapper>

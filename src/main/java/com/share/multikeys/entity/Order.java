@@ -2,6 +2,8 @@ package com.share.multikeys.entity;
 
 import java.util.Date;
 
+import com.share.multikeys.utils.DateUtil;
+
 public final class Order {
     
     private Integer orderId;
@@ -47,6 +49,7 @@ public final class Order {
 
 	@Override
     public String toString() {
-        return String.format("order_id: %s, user_id: %s, status: %s", orderId, userId, status);
+        return String.format("order_id: %s, user_id: %s, status: %s , create_time: %s", 
+        		orderId, userId, status,DateUtil.toDateString(createTime, "yyyy-MM-dd HH:mm:ss"));
     }
 }

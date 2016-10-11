@@ -25,4 +25,6 @@ public interface OrderRepository {
     List<Order> selectRangeTime(@Param("sDate")Date sDate, @Param("eDate")Date eDate);
     
     List<Order> selectBetweenKey(@Param("sId")Integer sId, @Param("eId")Integer eId);
+    
+    List<Order> selectLimit(@Param("date")Date date);
 }

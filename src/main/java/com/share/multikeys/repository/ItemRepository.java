@@ -23,4 +23,6 @@ public interface ItemRepository {
     List<Order> selectAll();
     
     List<Order> selectByKey(@Param(value = "itemId") Integer itemId);
-}
+    
+    List<Item> selectBetweenKeys(@Param(value = "sItemId") Integer sItemId,@Param(value = "eItemId") Integer eItemId);
+ }

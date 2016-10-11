@@ -1,5 +1,7 @@
 package com.share.multikeys.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -27,16 +29,27 @@ public class ItemService {
 	@Transactional(readOnly = true)
     public void select() {
 		Long s=System.currentTimeMillis();
-        System.out.println("cost "+(System.currentTimeMillis()-s)/1000+"S: "+itemRepository.selectAll());
+        System.out.println("cost "+(System.currentTimeMillis()-s)+"ms: "+itemRepository.selectAll());
     }
 	    
     public void selectByKey(Integer itemId) {
     	Long s=System.currentTimeMillis();
-        System.out.println("cost "+(System.currentTimeMillis()-s)/1000+"S: "+itemRepository.selectByKey(itemId));
+        System.out.println("cost "+(System.currentTimeMillis()-s)+"ms"+itemRepository.selectByKey(itemId));
     }
     
     public void selectJoin(Integer orderId) {
     	Long s=System.currentTimeMillis();
-        System.out.println("cost "+(System.currentTimeMillis()-s)/1000+"S: "+itemRepository.selectJoin(orderId));
+        System.out.println("cost "+(System.currentTimeMillis()-s)+"ms"+itemRepository.selectJoin(orderId));
+    }
+    
+    public void selectBetweenKeys(Integer sItemId,Integer eItemId){
+    	Long s=System.currentTimeMillis();
+    	List<Item> list=itemRepository.selectBetweenKeys(sItemId, eItemId);
+    	if(list!=null&&list.size()>0){
+    		for(int i=0;i<list.size();i++){
+    			System.out.println(list.get(i));
+    		}
+    	}
+        System.out.println("cost "+(System.currentTimeMillis()-s)+"ms");
     }
 }

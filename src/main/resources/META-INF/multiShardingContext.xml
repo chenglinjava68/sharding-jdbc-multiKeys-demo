@@ -14,19 +14,21 @@
                         http://www.dangdang.com/schema/ddframe/rdb/rdb.xsd">
     <context:component-scan base-package="com.share.multikeys" />
     
-    <bean id="multikeys" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost:3306/multikeys"/>
         <property name="username" value="root"/>
         <property name="password" value="xiao"/>
     </bean>
     
-    <rdb:strategy id="tableShardingStrategy" sharding-columns="order_id,create_time" algorithm-class="com.share.multikeys.algorithm.MultipleKeysIdAndTimeShardingAlgorithm"/>
+    <rdb:strategy id="mutilKeysStrategy" sharding-columns="order_id,create_time" algorithm-class="com.share.multikeys.algorithm.MultipleKeysIdAndTimeShardingAlgorithm"/>
+    <rdb:strategy id="singleKeyStrategy" sharding-columns="user_id" algorithm-class="com.share.multikeys.algorithm.SingleKeyShardingAlgorithm"/>
     
     <rdb:data-source id="shardingDataSource">
-        <rdb:sharding-rule data-sources="multikeys">
+        <rdb:sharding-rule data-sources="dataSource">
             <rdb:table-rules>
-                <rdb:table-rule logic-table="t_order" actual-tables="t_order_${0..1}_2016_q${0..3}" table-strategy="tableShardingStrategy"/>
+                <rdb:table-rule logic-table="t_order" actual-tables="t_order_${0..1}_2016_q${0..3}" table-strategy="mutilKeysStrategy"/>
+                <rdb:table-rule logic-table="t_user_order" actual-tables="t_user_order_${0..1}" table-strategy="singleKeyStrategy"/>
             </rdb:table-rules>
         </rdb:sharding-rule>
     </rdb:data-source>
