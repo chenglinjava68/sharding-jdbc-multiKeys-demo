@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.share.multikeys.repository.CommonRepository">
 
+	<resultMap id="itemResultMap" type="com.share.multikeys.entity.Item">
+        <result column="order_id" property="orderId" jdbcType="INTEGER"/>
+        <result column="item_id" property="itemId" jdbcType="INTEGER"/>
+        <result column="item_name" property="itemName" jdbcType="VARCHAR"/>
+    </resultMap>
+    
     <resultMap id="itemOrderResultMap" type="com.share.multikeys.entity.ItemOrderJoin">
         <result column="order_id" property="orderId" jdbcType="INTEGER"/>
         <result column="item_id" property="itemId" jdbcType="INTEGER"/>
@@ -17,6 +23,23 @@
         <result column="create_time" property="userOrderDate" jdbcType="TIMESTAMP"/>
     </resultMap>
     
+    <resultMap id="venderItemOrderJoin" type="com.share.multikeys.entity.VenderItemOrder">
+        <result column="vender_id" property="venderId" jdbcType="INTEGER"/>
+        <result column="order_id" property="orderId" jdbcType="INTEGER"/>
+        <result column="item_id" property="itemId" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="vender_name" property="venderName" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <resultMap id="userKindJoin" type="com.share.multikeys.entity.UserKind">
+        <result column="kind_id" property="kindId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="order_id" property="orderId" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
     <sql id="userOrderJoinColumnList">
         t_user_order.order_id,
         t_user_order.user_id,
@@ -25,28 +48,64 @@
         t_user_order.create_time
     </sql>
     
+    <sql id="userKindJoinBetweenKey">
+    	t_user_order.user_id,
+    	t_user_kind.kind_id,
+    	t_user_order.order_id,
+        t_user_order.remark,
+        t_user_kind.type,
+        t_user_order.create_time
+    </sql>
+    
+    <select id="selectVenderItemOrderJoin" resultMap="venderItemOrderJoin" parameterType="hashmap">
+       SELECT
+	   t_order_vender.vender_id,t_order_vender.vender_name,
+	   t_order_item.item_id, t_order.order_id, t_order.status
+	   FROM `t_order` inner join `t_order_item` on t_order.order_id=t_order_item.order_id left join `t_order_vender` on t_order.order_id=t_order_vender.order_id where t_order.order_id= #{orderId,jdbcType=INTEGER} 
+    </select>
+    
+    <select id="selectUserOrderJoinBetweenKey" resultMap="userOrderJoin" parameterType="hashmap">
+        SELECT
+        <include refid="userOrderJoinColumnList"/>
+        FROM `t_order` inner join `t_user_order` on t_order.order_id=t_user_order.order_id where
+        t_order.order_id <![CDATA[>]]> #{sOrderId,jdbcType=INTEGER} and t_order.order_id <![CDATA[<]]> #{eOrderId,jdbcType=INTEGER}
+    </select>
+    
+    <!-- between #{sOrderId,jdbcType=INTEGER} and #{eOrderId,jdbcType=INTEGER} -->
+    
+    
     <!-- where子句中指定路由表键值 -->
     <select id="selectItemOrderJoin" resultMap="itemOrderResultMap" parameterType="hashmap">
        SELECT
 	   t_order_item.item_id, t_order_item.order_id, t_order_item.item_name,t_order.create_time
-	   FROM `t_order` left join `t_order_item` on t_order.order_id=t_order_item.order_id  where t_order.order_id= #{orderId,jdbcType=INTEGER} 
+	   FROM `t_order` inner join `t_order_item` on t_order.order_id=t_order_item.order_id  where t_order.order_id= #{orderId,jdbcType=INTEGER} 
     </select>
     
-    <select id="selectUserOrderJoinWithTime" resultMap="userOrderJoin" parameterType="hashmap">
-        SELECT
-        <include refid="userOrderJoinColumnList"/>
-        FROM `t_order` left join `t_user_order` on t_order.order_id=t_user_order.order_id where
-        t_order.create_time between #{sTime,jdbcType=TIMESTAMP} and #{eTime,jdbcType=TIMESTAMP}
+    <select id="selectItemOrderJoinBetweenKey" resultMap="itemOrderResultMap" parameterType="hashmap">
+       SELECT
+	   t_order_item.item_id, t_order_item.order_id, t_order_item.item_name,t_order.create_time
+	   FROM `t_order` inner join `t_order_item` on t_order.order_id=t_order_item.order_id  
+	   where  t_order.order_id <![CDATA[>=]]> #{sOrderId,jdbcType=INTEGER} and t_order.order_id <![CDATA[<=]]> #{eOrderId,jdbcType=INTEGER}
     </select>
     
-    <!-- t_order.order_id=9 -->
-    <!--  
-    <select id="selectUserOrderJoinWithTime" resultMap="userOrderJoin" parameterType="hashmap">
-        SELECT
-        <include refid="userOrderJoinColumnList"/>
-        FROM `t_order` left join `t_user_order` on t_user_order.order_id=t_order.order_id where
-        t_order.create_time between #{sTime,jdbcType=TIMESTAMP} and #{eTime,jdbcType=TIMESTAMP} order by t_user_order.user_id desc  
+     <select id="selectItemOrderJoinBetweenKeyAndTime" resultMap="itemOrderResultMap" parameterType="hashmap">
+       SELECT
+	   t_order_item.item_id, t_order_item.order_id, t_order_item.item_name,t_order.create_time
+	   FROM `t_order` inner join `t_order_item` on t_order.order_id=t_order_item.order_id  
+	   where  t_order.order_id <![CDATA[>=]]> #{sOrderId,jdbcType=INTEGER} and t_order.order_id <![CDATA[<=]]> #{eOrderId,jdbcType=INTEGER}
+	   and t_order.create_time <![CDATA[>=]]> #{sTime,jdbcType=TIMESTAMP} and t_order.create_time <![CDATA[<=]]> #{eTime,jdbcType=TIMESTAMP}
     </select>
-    -->
+    
+     <select id="selectUserKindJionBetweenKey" resultMap="userKindJoin" parameterType="hashmap">
+        SELECT
+        <include refid="userKindJoinBetweenKey"/>
+        FROM `t_user_order` inner join `t_user_kind` on t_user_order.user_id=t_user_kind.user_id where
+        t_user_order.user_id <![CDATA[>]]> #{sUserId,jdbcType=INTEGER} and t_user_order.user_id <![CDATA[<]]> #{eUserId,jdbcType=INTEGER} order by user_id
+    </select>
+    
+    <select id="selectIntemsBetweenKeys" resultMap="itemResultMap" parameterType="hashmap">
+        SELECT item_id,order_id, item_name FROM `t_order_item` where
+        item_id between #{sItemId,jdbcType=INTEGER} and #{eItemId,jdbcType=INTEGER} order by item_id desc 
+    </select>
     
 </mapper>

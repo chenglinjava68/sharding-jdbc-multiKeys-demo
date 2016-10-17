@@ -9,6 +9,21 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="shardingDataSource"/>
         <property name="mapperLocations" value="classpath*:META-INF/mybatis/mappers/*Mapper.xml"/>
+    	<property name="plugins">
+			<array>
+				<bean class="com.github.pagehelper.PageHelper">
+		        	<property name="properties">
+		          		<value>
+		            		dialect=mysql
+		            		offsetAsPageNum=true
+		            		rowBoundsWithCount=true
+		            		pageSizeZero=true
+		            		reasonable=false
+		          		</value>
+		        	</property>
+		      	</bean>
+	    	</array>
+		</property>
     </bean>
     
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">

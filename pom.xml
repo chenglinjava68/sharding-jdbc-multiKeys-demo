@@ -20,6 +20,8 @@
         <hibernate.version>4.3.11.Final</hibernate.version>
         <springframework.version>4.1.1.RELEASE</springframework.version>
         
+        <pagehelper-version>4.0.1</pagehelper-version>
+        
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
         <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
@@ -98,6 +100,11 @@
             <artifactId>sharding-jdbc-config-spring</artifactId>
             <version>${sharding-jdbc.version}</version>
         </dependency>
+        <dependency>
+		    <groupId>com.github.pagehelper</groupId>
+		    <artifactId>pagehelper</artifactId>
+		    <version>${pagehelper-version}</version>
+		</dependency>
         
         <!-- Log begin -->
         <dependency>

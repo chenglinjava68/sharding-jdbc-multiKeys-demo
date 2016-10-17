@@ -160,6 +160,21 @@ CREATE TABLE `t_user_order_1` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `t_user_kind_0` (
+  `kind_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  PRIMARY KEY (`kind_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `t_user_kind_1` (
+  `kind_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  PRIMARY KEY (`kind_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `t_order_item` (
   `item_id` int(11) NOT NULL,
   `order_id` int(11) NOT NULL,
@@ -167,9 +182,9 @@ CREATE TABLE `t_order_item` (
   PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `t_package` (
-  `package_id` int(11) NOT NULL,
-  `item_id` int(11) NOT NULL,
-  `package_name` varchar(50) NOT NULL,
-  PRIMARY KEY (`package_id`)
+CREATE TABLE `t_order_vender` (
+  `vender_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `vender_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`vender_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

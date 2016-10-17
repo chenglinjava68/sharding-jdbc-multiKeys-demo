@@ -14,21 +14,34 @@
                         http://www.dangdang.com/schema/ddframe/rdb/rdb.xsd">
     <context:component-scan base-package="com.share.multikeys" />
     
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/multikeys"/>
-        <property name="username" value="root"/>
-        <property name="password" value="xiao"/>
+    <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+        init-method="init" destroy-method="close">
+	    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/multikeys" />
+		<property name="username" value="root" />
+		<property name="password" value="xiao" />
+        <property name="initialSize" value="10" />
+        <property name="minIdle" value="10" />
+        <property name="maxActive" value="20" />
+        <property name="maxWait" value="60000" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        <property name="validationQuery" value="jdbc.testSql" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
     </bean>
     
     <rdb:strategy id="mutilKeysStrategy" sharding-columns="order_id,create_time" algorithm-class="com.share.multikeys.algorithm.MultipleKeysIdAndTimeShardingAlgorithm"/>
     <rdb:strategy id="singleKeyStrategy" sharding-columns="user_id" algorithm-class="com.share.multikeys.algorithm.SingleKeyShardingAlgorithm"/>
     
     <rdb:data-source id="shardingDataSource">
-        <rdb:sharding-rule data-sources="dataSource">
+        <rdb:sharding-rule data-sources="dataSource" default-data-source="dataSource">
             <rdb:table-rules>
                 <rdb:table-rule logic-table="t_order" actual-tables="t_order_${0..1}_2016_q${0..3}" table-strategy="mutilKeysStrategy"/>
                 <rdb:table-rule logic-table="t_user_order" actual-tables="t_user_order_${0..1}" table-strategy="singleKeyStrategy"/>
+           		<rdb:table-rule logic-table="t_user_kind" actual-tables="t_user_kind_${0..1}" table-strategy="singleKeyStrategy"/>
             </rdb:table-rules>
         </rdb:sharding-rule>
     </rdb:data-source>
@@ -37,4 +50,13 @@
         <property name="dataSource" ref="shardingDataSource" />
     </bean>
     <tx:annotation-driven transaction-manager="transactionManager" />
+    
+    <!--  
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/multikeys"/>
+        <property name="username" value="root"/>
+        <property name="password" value="xiao"/>
+    </bean>
+    -->
 </beans>
